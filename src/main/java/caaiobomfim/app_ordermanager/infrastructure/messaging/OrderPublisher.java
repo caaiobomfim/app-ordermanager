@@ -1,8 +1,10 @@
 package caaiobomfim.app_ordermanager.infrastructure.messaging;
 
+import org.springframework.stereotype.Component;
 import software.amazon.awssdk.services.sqs.SqsAsyncClient;
 import software.amazon.awssdk.services.sqs.model.SendMessageRequest;
 
+@Component
 public class OrderPublisher {
 
     private final SqsAsyncClient sqsClient;

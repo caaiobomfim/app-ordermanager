@@ -1,9 +1,9 @@
 package caaiobomfim.app_ordermanager.adapter.in.rest.dto;
 
+import caaiobomfim.app_ordermanager.domain.model.OrderStatus;
 import com.fasterxml.jackson.annotation.JsonProperty;
 import lombok.Getter;
 import lombok.Setter;
-import lombok.ToString;
 
 import java.util.List;
 
@@ -21,6 +21,6 @@ public class OrderResponse {
     private List<String> items;
 
     @JsonProperty("status")
-    private String status;
+    private OrderStatus status;
 
 }

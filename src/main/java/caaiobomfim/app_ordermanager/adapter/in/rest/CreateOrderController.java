@@ -4,6 +4,7 @@ import caaiobomfim.app_ordermanager.adapter.in.rest.dto.OrderRequest;
 import caaiobomfim.app_ordermanager.adapter.in.rest.dto.OrderResponse;
 import caaiobomfim.app_ordermanager.adapter.in.rest.mapper.OrderMapper;
 import caaiobomfim.app_ordermanager.domain.model.Order;
+import caaiobomfim.app_ordermanager.domain.model.OrderStatus;
 import caaiobomfim.app_ordermanager.infrastructure.messaging.OrderPublisher;
 import com.fasterxml.jackson.core.JsonProcessingException;
 import com.fasterxml.jackson.databind.ObjectMapper;
@@ -35,10 +36,12 @@ public class CreateOrderController {
         Order order = OrderMapper.INSTANCE.mapFrom(orderRequest);
 
         order.setId(UUID.randomUUID().toString());
+        order.setStatus(OrderStatus.PENDENTE);
 
         String message = objectMapper.writeValueAsString(order);
         orderPublisher.publish(message);
 
+        order.setStatus(OrderStatus.PROCESSADO);
         OrderResponse orderResponse = OrderMapper.INSTANCE.mapFrom(order);
 
         return ResponseEntity.status(HttpStatus.CREATED).body(orderResponse);

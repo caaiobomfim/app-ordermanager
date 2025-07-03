@@ -12,9 +12,9 @@ public class Order {
     private String id;
     private String clientId;
     private List<String> items;
-    private String status;
+    private OrderStatus status;
 
-    public Order(String id, String clientId, List<String> items, String status) {
+    public Order(String id, String clientId, List<String> items, OrderStatus status) {
         this.id = id;
         this.clientId = clientId;
         this.items = items;
