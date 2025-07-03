@@ -3,10 +3,8 @@ package caaiobomfim.app_ordermanager.adapter.in.rest;
 import caaiobomfim.app_ordermanager.adapter.in.rest.dto.OrderRequest;
 import caaiobomfim.app_ordermanager.adapter.in.rest.dto.OrderResponse;
 import caaiobomfim.app_ordermanager.adapter.in.rest.mapper.OrderMapper;
+import caaiobomfim.app_ordermanager.application.service.GetOrderStatusUseCase;
 import caaiobomfim.app_ordermanager.application.service.ProcessOrderUseCase;
-import caaiobomfim.app_ordermanager.infrastructure.messaging.OrderPublisher;
-import caaiobomfim.app_ordermanager.repository.InMemoryOrderRepository;
-import com.fasterxml.jackson.databind.ObjectMapper;
 import jakarta.validation.Valid;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
@@ -17,11 +15,11 @@ import org.springframework.web.bind.annotation.*;
 public class OrderController {
 
     private final ProcessOrderUseCase processOrderUseCase;
-    private final InMemoryOrderRepository repository;
+    private final GetOrderStatusUseCase getOrderStatusUseCase;
 
-    public OrderController(InMemoryOrderRepository repository, OrderPublisher orderPublisher, ObjectMapper objectMapper, ProcessOrderUseCase processOrderUseCase) {
-        this.repository = repository;
+    public OrderController(ProcessOrderUseCase processOrderUseCase, GetOrderStatusUseCase getOrderStatusUseCase) {
         this.processOrderUseCase = processOrderUseCase;
+        this.getOrderStatusUseCase = getOrderStatusUseCase;
     }
 
     @PostMapping
@@ -38,7 +36,7 @@ public class OrderController {
 
     @GetMapping("/{id}")
     public ResponseEntity<OrderResponse> getOrder(@PathVariable String id) {
-        return repository.findById(id)
+        return getOrderStatusUseCase.getById(id)
                 .map(order -> ResponseEntity.ok(OrderMapper.INSTANCE.mapFrom(order)))
                 .orElse(ResponseEntity.notFound().build());
     }
