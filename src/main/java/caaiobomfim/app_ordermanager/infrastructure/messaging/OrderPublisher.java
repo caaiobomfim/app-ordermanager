@@ -9,7 +9,7 @@ public class OrderPublisher {
 
     private final SqsAsyncClient sqsClient;
 
-    private static final String QUEUE_URL = "https://sqs.sa-east-1.amazonaws.com/123456789012/order-queue";
+    private static final String QUEUE_URL = "http://localhost:4566/000000000000/order-queue";
 
     public OrderPublisher(SqsAsyncClient sqsClient) {
         this.sqsClient = sqsClient;
