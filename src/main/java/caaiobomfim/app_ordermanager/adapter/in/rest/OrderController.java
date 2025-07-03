@@ -3,44 +3,35 @@ package caaiobomfim.app_ordermanager.adapter.in.rest;
 import caaiobomfim.app_ordermanager.adapter.in.rest.dto.OrderRequest;
 import caaiobomfim.app_ordermanager.adapter.in.rest.dto.OrderResponse;
 import caaiobomfim.app_ordermanager.adapter.in.rest.mapper.OrderMapper;
-import caaiobomfim.app_ordermanager.domain.model.Order;
-import caaiobomfim.app_ordermanager.domain.model.OrderStatus;
+import caaiobomfim.app_ordermanager.application.service.ProcessOrderUseCase;
 import caaiobomfim.app_ordermanager.infrastructure.messaging.OrderPublisher;
 import caaiobomfim.app_ordermanager.repository.InMemoryOrderRepository;
-import com.fasterxml.jackson.core.JsonProcessingException;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import jakarta.validation.Valid;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
-import java.util.UUID;
-
 @RestController
 @RequestMapping("/pedidos")
 public class OrderController {
 
+    private final ProcessOrderUseCase processOrderUseCase;
     private final InMemoryOrderRepository repository;
-    private final OrderPublisher orderPublisher;
-    private final ObjectMapper objectMapper;
 
-    public OrderController(InMemoryOrderRepository repository, OrderPublisher orderPublisher, ObjectMapper objectMapper) {
+    public OrderController(InMemoryOrderRepository repository, OrderPublisher orderPublisher, ObjectMapper objectMapper, ProcessOrderUseCase processOrderUseCase) {
         this.repository = repository;
-        this.orderPublisher = orderPublisher;
-        this.objectMapper = objectMapper;
+        this.processOrderUseCase = processOrderUseCase;
     }
 
     @PostMapping
-    public ResponseEntity<OrderResponse> createOrder(@Valid @RequestBody OrderRequest orderRequest) throws JsonProcessingException {
+    public ResponseEntity<OrderResponse> createOrder(@Valid @RequestBody OrderRequest orderRequest) {
 
-        Order order = OrderMapper.INSTANCE.mapFrom(orderRequest);
+        var order = OrderMapper.INSTANCE.mapFrom(orderRequest);
 
-        order.setId(UUID.randomUUID().toString());
-        order.setStatus(OrderStatus.PENDENTE);
+        var processedOrder = processOrderUseCase.publish(order);
 
-        orderPublisher.publish(order);
-
-        OrderResponse orderResponse = OrderMapper.INSTANCE.mapFrom(order);
+        var orderResponse = OrderMapper.INSTANCE.mapFrom(processedOrder);
 
         return ResponseEntity.status(HttpStatus.CREATED).body(orderResponse);
     }
