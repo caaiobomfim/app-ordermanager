@@ -1,5 +1,6 @@
 package caaiobomfim.app_ordermanager.infrastructure.messaging;
 
+import org.springframework.beans.factory.annotation.Value;
 import org.springframework.stereotype.Component;
 import software.amazon.awssdk.services.sqs.SqsAsyncClient;
 import software.amazon.awssdk.services.sqs.model.SendMessageRequest;
@@ -9,7 +10,8 @@ public class OrderPublisher {
 
     private final SqsAsyncClient sqsClient;
 
-    private static final String QUEUE_URL = "http://localhost:4566/000000000000/order-queue";
+    @Value("${aws.sqs.queue.url}")
+    private String QUEUE_URL;
 
     public OrderPublisher(SqsAsyncClient sqsClient) {
         this.sqsClient = sqsClient;
