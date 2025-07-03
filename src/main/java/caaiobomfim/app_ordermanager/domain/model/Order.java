@@ -5,14 +5,14 @@ import lombok.Setter;
 
 import java.util.List;
 
+@Setter
 @Getter
 public class Order {
 
-    @Setter
     private String id;
-    private final String clientId;
-    private final List<String> items;
-    private final String status;
+    private String clientId;
+    private List<String> items;
+    private String status;
 
     public Order(String id, String clientId, List<String> items, String status) {
         this.id = id;

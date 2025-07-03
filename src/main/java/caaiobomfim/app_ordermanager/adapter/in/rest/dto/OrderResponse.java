@@ -2,10 +2,13 @@ package caaiobomfim.app_ordermanager.adapter.in.rest.dto;
 
 import com.fasterxml.jackson.annotation.JsonProperty;
 import lombok.Getter;
+import lombok.Setter;
+import lombok.ToString;
 
 import java.util.List;
 
 @Getter
+@Setter
 public class OrderResponse {
 
     @JsonProperty("id")

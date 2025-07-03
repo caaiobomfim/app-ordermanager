@@ -25,9 +25,9 @@ public class CreateOrderController {
 
         order.setId(UUID.randomUUID().toString());
 
-        OrderResponse response = OrderMapper.INSTANCE.mapFrom(order);
+        OrderResponse orderResponse = OrderMapper.INSTANCE.mapFrom(order);
 
-        return ResponseEntity.status(HttpStatus.CREATED).body(response);
+        return ResponseEntity.status(HttpStatus.CREATED).body(orderResponse);
     }
 
 }
