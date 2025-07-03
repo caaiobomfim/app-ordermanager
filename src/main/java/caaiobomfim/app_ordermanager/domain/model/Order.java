@@ -1,13 +1,15 @@
 package caaiobomfim.app_ordermanager.domain.model;
 
 import lombok.Getter;
+import lombok.Setter;
 
 import java.util.List;
 
 @Getter
 public class Order {
 
-    private final String id;
+    @Setter
+    private String id;
     private final String clientId;
     private final List<String> items;
     private final String status;
