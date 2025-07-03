@@ -2,7 +2,6 @@ package caaiobomfim.app_ordermanager.infrastructure.messaging;
 
 import caaiobomfim.app_ordermanager.application.service.ProcessOrderUseCase;
 import caaiobomfim.app_ordermanager.domain.model.Order;
-import caaiobomfim.app_ordermanager.domain.model.OrderStatus;
 import caaiobomfim.app_ordermanager.repository.InMemoryOrderRepository;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import org.springframework.beans.factory.annotation.Value;
@@ -33,7 +32,7 @@ public class OrderConsumer {
     }
 
     @Scheduled(fixedDelayString = "${consumer.fixed-delay}", initialDelayString = "${consumer.initial-delay}")
-    private void receiveMessages() {
+    void receiveMessages() {
         System.out.println("Buscando... ");
 
         ReceiveMessageRequest request = ReceiveMessageRequest.builder()
@@ -50,7 +49,7 @@ public class OrderConsumer {
                 });
     }
 
-    private void processMessage(Message message) {
+    void processMessage(Message message) {
         try {
             System.out.println("Mensagem recebida: " + message.body());
 
