@@ -19,7 +19,7 @@ public class CreateOrderController {
     @PostMapping
     public ResponseEntity<OrderResponse> createOrder(@Valid @RequestBody OrderRequest request) {
         List<String> items = new ArrayList<>();
-        OrderResponse response = new OrderResponse("1", items, "PROCESSADO");
+        OrderResponse response = new OrderResponse();
         return ResponseEntity.status(201).body(response);
     }
 

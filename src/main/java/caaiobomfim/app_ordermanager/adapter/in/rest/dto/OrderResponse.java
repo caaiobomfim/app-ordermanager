@@ -1,5 +1,6 @@
 package caaiobomfim.app_ordermanager.adapter.in.rest.dto;
 
+import com.fasterxml.jackson.annotation.JsonProperty;
 import lombok.Getter;
 
 import java.util.List;
@@ -7,14 +8,16 @@ import java.util.List;
 @Getter
 public class OrderResponse {
 
+    @JsonProperty("id")
     private String id;
-    private List<String> items;
-    private String status;
 
-    public OrderResponse(String id, List<String> items, String status) {
-        this.id = id;
-        this.items = items;
-        this.status = status;
-    }
+    @JsonProperty("clientId")
+    private String clientId;
+
+    @JsonProperty("items")
+    private List<String> items;
+
+    @JsonProperty("status")
+    private String status;
 
 }
