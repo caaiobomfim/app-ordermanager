@@ -6,26 +6,26 @@ import caaiobomfim.app_ordermanager.adapter.in.rest.mapper.OrderMapper;
 import caaiobomfim.app_ordermanager.domain.model.Order;
 import caaiobomfim.app_ordermanager.domain.model.OrderStatus;
 import caaiobomfim.app_ordermanager.infrastructure.messaging.OrderPublisher;
+import caaiobomfim.app_ordermanager.repository.InMemoryOrderRepository;
 import com.fasterxml.jackson.core.JsonProcessingException;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import jakarta.validation.Valid;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
-import org.springframework.web.bind.annotation.PostMapping;
-import org.springframework.web.bind.annotation.RequestBody;
-import org.springframework.web.bind.annotation.RequestMapping;
-import org.springframework.web.bind.annotation.RestController;
+import org.springframework.web.bind.annotation.*;
 
 import java.util.UUID;
 
 @RestController
 @RequestMapping("/pedidos")
-public class CreateOrderController {
+public class OrderController {
 
+    private final InMemoryOrderRepository repository;
     private final OrderPublisher orderPublisher;
     private final ObjectMapper objectMapper;
 
-    public CreateOrderController(OrderPublisher orderPublisher, ObjectMapper objectMapper) {
+    public OrderController(InMemoryOrderRepository repository, OrderPublisher orderPublisher, ObjectMapper objectMapper) {
+        this.repository = repository;
         this.orderPublisher = orderPublisher;
         this.objectMapper = objectMapper;
     }
@@ -38,13 +38,18 @@ public class CreateOrderController {
         order.setId(UUID.randomUUID().toString());
         order.setStatus(OrderStatus.PENDENTE);
 
-        String message = objectMapper.writeValueAsString(order);
-        orderPublisher.publish(message);
+        orderPublisher.publish(order);
 
-        order.setStatus(OrderStatus.PROCESSADO);
         OrderResponse orderResponse = OrderMapper.INSTANCE.mapFrom(order);
 
         return ResponseEntity.status(HttpStatus.CREATED).body(orderResponse);
+    }
+
+    @GetMapping("/{id}")
+    public ResponseEntity<OrderResponse> getOrder(@PathVariable String id) {
+        return repository.findById(id)
+                .map(order -> ResponseEntity.ok(OrderMapper.INSTANCE.mapFrom(order)))
+                .orElse(ResponseEntity.notFound().build());
     }
 
 }
