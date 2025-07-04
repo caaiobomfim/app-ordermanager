@@ -24,6 +24,10 @@ A aplicação também faz o consumo de mensagens da fila para processamento de p
 git clone https://github.com/caaiobomfim/app-ordermanager.git
 ```
 
+Pre-requisitos:
+- Instalação do JDK 21.
+- Executar mvn clean package para geração do jar do projeto.
+
 ### 2. Subir ambiente com Docker Compose
 
 O docker-compose.yml foi desenvolvido para iniciar o container da aplicação e o container do localstack que simula os serviços da AWS.
