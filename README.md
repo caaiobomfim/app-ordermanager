@@ -24,7 +24,7 @@ A aplicação também faz o consumo de mensagens da fila para processamento de p
 git clone https://github.com/caaiobomfim/app-ordermanager.git
 ```
 
-Antes de seguir para a execução do docker, podemos seguir com os itens abaixo ou usar a imagem docker **caiobom/app-ordermanager** publicada no DockerHub.
+Antes de seguir para a execução do docker, podemos seguir com os requisitos abaixo ou usar a imagem docker **caiobom/app-ordermanager** publicada no DockerHub.
 Caso a escolha seja pelo uso da imagem, podemos pular essa etapa e ir para o item 2 desse manual.
 Caso a escolha seja não usar a imagem do DockerHub, é necessário instalar o JDK 21 e no docker-compose.yml precisamos realizar um DE/PARA conforme instrução abaixo.
 
