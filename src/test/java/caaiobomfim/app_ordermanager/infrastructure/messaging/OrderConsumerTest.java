@@ -3,7 +3,6 @@ package caaiobomfim.app_ordermanager.infrastructure.messaging;
 import caaiobomfim.app_ordermanager.application.service.ProcessOrderUseCase;
 import caaiobomfim.app_ordermanager.domain.model.Order;
 import caaiobomfim.app_ordermanager.domain.model.OrderStatus;
-import caaiobomfim.app_ordermanager.repository.InMemoryOrderRepository;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
@@ -39,7 +38,7 @@ public class OrderConsumerTest {
         MockitoAnnotations.openMocks(this);
         objectMapper = new ObjectMapper();
 
-        orderConsumer = new OrderConsumer(sqsClient, new InMemoryOrderRepository(), processOrderUseCase, objectMapper);
+        orderConsumer = new OrderConsumer(sqsClient, processOrderUseCase, objectMapper);
 
         ReflectionTestUtils.setField(orderConsumer, "queue_url", "http://localhost:4566/000000000000/order-queue");
         ReflectionTestUtils.setField(orderConsumer, "processing_delay", 1L);

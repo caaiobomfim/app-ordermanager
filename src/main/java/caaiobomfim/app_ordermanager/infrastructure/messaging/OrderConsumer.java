@@ -2,7 +2,6 @@ package caaiobomfim.app_ordermanager.infrastructure.messaging;
 
 import caaiobomfim.app_ordermanager.application.service.ProcessOrderUseCase;
 import caaiobomfim.app_ordermanager.domain.model.Order;
-import caaiobomfim.app_ordermanager.repository.InMemoryOrderRepository;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.scheduling.annotation.Scheduled;
@@ -25,7 +24,7 @@ public class OrderConsumer {
     @Value("${order.processing-delay}")
     private long processing_delay;
 
-    public OrderConsumer(SqsAsyncClient sqsClient, InMemoryOrderRepository repository, ProcessOrderUseCase processOrderUseCase, ObjectMapper objectMapper) {
+    public OrderConsumer(SqsAsyncClient sqsClient, ProcessOrderUseCase processOrderUseCase, ObjectMapper objectMapper) {
         this.sqsClient = sqsClient;
         this.processOrderUseCase = processOrderUseCase;
         this.objectMapper = objectMapper;

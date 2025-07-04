@@ -1,63 +1,59 @@
 package caaiobomfim.app_ordermanager.infrastructure.messaging;
 
 import caaiobomfim.app_ordermanager.domain.model.Order;
-import caaiobomfim.app_ordermanager.domain.model.OrderStatus;
-import caaiobomfim.app_ordermanager.repository.InMemoryOrderRepository;
+import com.fasterxml.jackson.databind.ObjectMapper;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
+import org.mockito.ArgumentCaptor;
 import software.amazon.awssdk.services.sqs.SqsAsyncClient;
 import software.amazon.awssdk.services.sqs.model.SendMessageRequest;
 import software.amazon.awssdk.services.sqs.model.SendMessageResponse;
 
 import java.util.List;
-import java.util.UUID;
 import java.util.concurrent.CompletableFuture;
 
 import static org.junit.jupiter.api.Assertions.assertEquals;
-import static org.junit.jupiter.api.Assertions.assertTrue;
-import static org.mockito.ArgumentMatchers.any;
 import static org.mockito.Mockito.*;
 
 public class OrderPublisherTest {
 
     private SqsAsyncClient sqsClient;
-    private InMemoryOrderRepository repository;
     private OrderPublisher publisher;
 
     private static final String QUEUE_URL = "http://localhost:4566/000000000000/order-queue";
 
     @BeforeEach
-    void setUp() {
+    void setup() throws Exception {
         sqsClient = mock(SqsAsyncClient.class);
-        repository = new InMemoryOrderRepository();
-        publisher = new OrderPublisher(sqsClient, repository);
+        publisher = new OrderPublisher(sqsClient);
 
-        try {
-            var field = OrderPublisher.class.getDeclaredField("QUEUE_URL");
-            field.setAccessible(true);
-            field.set(publisher, QUEUE_URL);
-        } catch (Exception e) {
-            throw new RuntimeException(e);
-        }
+        var field = OrderPublisher.class.getDeclaredField("QUEUE_URL");
+        field.setAccessible(true);
+        field.set(publisher, "http://queue-url");
     }
 
     @Test
-    void shouldSaveOrderAndSendToSqsQueue() throws Exception {
+    void devePublicarMensagemNoSqs() throws Exception {
         Order order = new Order();
-        order.setId(UUID.randomUUID().toString());
-        order.setClientId("CLIENTID");
-        order.setItems(List.of("item1", "item2"));
-        order.setStatus(OrderStatus.PENDENTE);
-
-        var future = CompletableFuture.completedFuture(SendMessageResponse.builder().messageId("123").build());
-        when(sqsClient.sendMessage(any(SendMessageRequest.class))).thenReturn(future);
+        order.setId("ID1");
+        order.setClientId("CLIENT1");
+        order.setItems(List.of("item1"));
+        SendMessageResponse mockResponse = SendMessageResponse.builder()
+                .messageId("123")
+                .build();
+        when(sqsClient.sendMessage(any(SendMessageRequest.class)))
+                .thenReturn(CompletableFuture.completedFuture(mockResponse));
 
         publisher.publish(order);
 
-        var saved = repository.findById(order.getId());
-        assertTrue(saved.isPresent());
-        assertEquals(order.getClientId(), saved.get().getClientId());
+        ArgumentCaptor<SendMessageRequest> captor = ArgumentCaptor.forClass(SendMessageRequest.class);
+        verify(sqsClient, times(1)).sendMessage(captor.capture());
 
-        verify(sqsClient, times(1)).sendMessage(any(SendMessageRequest.class));
+        SendMessageRequest sentRequest = captor.getValue();
+        assertEquals("http://queue-url", sentRequest.queueUrl());
+
+        ObjectMapper mapper = new ObjectMapper();
+        String expectedMessage = mapper.writeValueAsString(order);
+        assertEquals(expectedMessage, sentRequest.messageBody());
     }
 }
