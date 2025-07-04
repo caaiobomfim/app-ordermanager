@@ -15,9 +15,10 @@ services:
       - app-network
 
   app:
-    build:
-      context: .
-      dockerfile: Dockerfile
+#    build:
+#      context: .
+#      dockerfile: Dockerfile
+    image: caiobom/app-ordermanager:latest
     container_name: app_ordermanager
     environment:
       - AWS_SQS_QUEUE_URL=http://sqs.sa-east-1.localhost.localstack.cloud:4566/000000000000/order-queue
