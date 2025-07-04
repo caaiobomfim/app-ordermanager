@@ -2,12 +2,14 @@ package caaiobomfim.app_ordermanager;
 
 import org.springframework.boot.SpringApplication;
 import org.springframework.boot.autoconfigure.SpringBootApplication;
+import org.springframework.scheduling.annotation.EnableScheduling;
 
 @SpringBootApplication
-public class AppOrdermanagerApplication {
+@EnableScheduling
+public class AppOrderManagerApplication {
 
 	public static void main(String[] args) {
-		SpringApplication.run(AppOrdermanagerApplication.class, args);
+		SpringApplication.run(AppOrderManagerApplication.class, args);
 	}
 
 }
