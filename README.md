@@ -29,7 +29,6 @@ Caso a escolha seja pelo uso da imagem, podemos pular essa etapa e ir para o ite
 Caso a escolha seja não usar a imagem do DockerHub, é necessário instalar o JDK 21 e no docker-compose.yml precisamos realizar um DE/PARA conforme instrução abaixo.
 
 - Instalação do JDK 21.
-- Executar mvn clean package para geração do jar do projeto.
 
 docker-compose.yml:
 
@@ -52,6 +51,8 @@ PARA:
       dockerfile: Dockerfile
 #    image: caiobom/app-ordermanager:latest
 ```
+
+- Executar mvn clean package para geração do jar do projeto.
 
 ### 2. Subir ambiente com Docker Compose
 
